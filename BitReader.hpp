@@ -1,3 +1,4 @@
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -23,7 +24,7 @@ public:
     {
         if(index == -1)
         {
-            throw std::runtime_error("Read value above lenght. Your number is: " + std::to_string(length) + " bits and you tried to read another one\n");
+            throw std::out_of_range("Read value above lenght. Your number is: " + std::to_string(length) + " bits and you tried to read another one\n");
         }
         bool value = (number & (1ULL << index)); 
         
@@ -68,6 +69,58 @@ public:
     {
         return BitIterator(number, static_cast<size_t>(-1));
     }
+
+    void setBit(const size_t bitIndex, bool value) 
+    {
+        if(bitIndex > length)
+        {
+            throw std::out_of_range("Read value above lenght. Your number is: " + std::to_string(length) + " bits and you tried to read above\n");
+        }
+
+        if(value)
+        {
+            number |= (1ULL << bitIndex);   
+        }else
+        {
+            number &= ~(1ULL << bitIndex);
+        }
+    }
+
+    struct BitReference
+    {
+        T &number;
+        size_t pozition;
+
+        void operator=(bool value)
+        {
+            if(value)
+            {
+                number |= (1ULL << pozition);
+            }
+            else
+            {
+                number &= ~(1ULL << pozition);
+            }
+        }
+
+        operator bool() const
+        {
+            return (number >> pozition) & 1;
+        }
+    };
+    
+    
+
+    BitReference operator[](size_t bitIndex)
+    {
+        if(bitIndex > length)
+        {
+            throw std::out_of_range("Read value above lenght. Your number is: " + std::to_string(length) + " bits and you tried to read above\n");
+        }
+
+        return BitReference{number, bitIndex};
+    }
+
 
 private:
     T number;
