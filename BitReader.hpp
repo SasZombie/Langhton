@@ -1,68 +1,76 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cctype>
 
+template <typename T>
+concept Numeric = std::is_arithmetic_v<T>;
+
+template <Numeric T>
 class BitReader
 {
 public:
-    BitReader(const std::string &filename)
-        : file(filename, std::ios::binary), currentByte(0), bitsRemaining(0), mask(128)
+    BitReader() = default;
+    BitReader(T n_number)
+        : number(n_number)
     {
-        if (!file)
-        {
-            throw std::runtime_error("Unable to open file");
-        }
+        length = sizeof(T) * 8;
+        index = (sizeof(T) * 8) - 1;
     }
 
-    void readByte()
+    //READS MSB
+    bool readValueMSB()
     {
-        file.read(reinterpret_cast<char *>(&currentByte), 1);
-
-        if (file.gcount() != 1)
+        if(index == -1)
         {
-
-            throw std::runtime_error("Error reading byte\n");
+            throw std::runtime_error("Read value above lenght. Your number is: " + std::to_string(length) + " bits and you tried to read another one\n");
         }
-        this->bitsRemaining = 8;
-        this->mask = 128;
+        bool value = (number & (1ULL << index)); 
+        
+        --index;
+
+        return value != 0;
     }
 
-    bool readBit()
+    class BitIterator
     {
-        if (!this->bitsRemaining)
+    public: 
+        BitIterator(T n_number, size_t n_index)
+            : number(n_number), index(n_index){}
+
+        bool operator*() const
         {
-            this->readByte();
+            return (number & (1ULL << index)) != 0;
         }
 
-        bool val = (currentByte & mask) >> (bitsRemaining - 1);
-        --bitsRemaining;
-        mask = mask / 2;
+        BitIterator& operator++()
+        {
+            --index;
+            return *this;
+        }
 
-        return val;
+        bool operator!=(const BitIterator& other) const 
+        {
+            return index != other.index;
+        }
+
+    private:
+        T number;
+        size_t index;
+    };
+
+    BitIterator begin() const 
+    {
+        return BitIterator(number, length - 1);
     }
 
-    unsigned char readBits(unsigned int bits)
+    BitIterator end() const
     {
-        if (bits < 1 || bits > 8)
-        {
-            std::cout << "Warning: incorrect value of bits, truncated to 1\n";
-            bits = 1;
-        };
-
-        unsigned char number = 0;
-
-        for (size_t i = 0; i < bits; ++i)
-        {
-            bool rezult = readBit();
-            number |= (rezult << (bits - i - 1));
-        }
-
-        return number;
+        return BitIterator(number, static_cast<size_t>(-1));
     }
 
 private:
-    std::ifstream file;
-    unsigned char currentByte;
-    int bitsRemaining;
-    size_t mask;
+    T number;
+    size_t length;
+    int index = 0;
 };
