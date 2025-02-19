@@ -57,24 +57,3 @@ void moveAnt(Ant& ant, BitReader<uint64_t>& bit)
 
     bit[index] = !bit[index];
 }
-
-int main()
-{
-    uint64_t value32 = 0;
-    
-    BitReader reader(value32);
-    Ant ant{4, 4, Facing::UP};
-
-    for(const auto elem : reader)
-    {
-        std::cout << elem;
-    }
-
-    moveAnt(ant, reader);
-
-    std::cout << '\n';
-    for(const auto elem : reader)
-    {
-        std::cout << elem;
-    }
-}

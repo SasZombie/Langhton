@@ -1,4 +1,4 @@
-
+#pragma once
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -17,6 +17,11 @@ public:
     {
         length = sizeof(T) * 8;
         index = (sizeof(T) * 8) - 1;
+    }
+
+    void resetIndex()
+    {
+        index = length - 1;
     }
 
     //READS MSB
