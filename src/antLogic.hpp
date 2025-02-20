@@ -13,7 +13,7 @@ struct Ant
 {
     size_t x, y;
     Facing facing;
-    BitReader<T> reader[9];
+    std::array<BitReader<T>, 9> readers;
 };
 
 template <Numeric T>
