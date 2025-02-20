@@ -12,9 +12,7 @@ void DrawAnt(Ant& ant);
 const size_t ScreenWidth = 800;
 const size_t ScreenHeight = 800;
 
-float 
-    cellSize = 20,
-    boardPartSize = 8;
+constexpr float cellSize = 20, boardPartSize = 8;
 void DrawBoardUnaccessiblePart(float offsetX, float offsetY) {
     for(int i = 0; i < boardPartSize; ++i)
         for(int j = 0; j < boardPartSize; ++j)

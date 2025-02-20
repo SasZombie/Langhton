@@ -3,8 +3,8 @@
 
 enum struct Facing{
     UP, 
-    DOWN,
     RIGHT,
+    DOWN,
     LEFT,
 };
 
@@ -37,9 +37,10 @@ std::pair<size_t, size_t> move(const Ant& a)
     }
 }
 
-void moveAnt(Ant& ant, BitReader<uint64_t>& bit)
+template<Numeric T>
+void moveAnt(Ant& ant, BitReader<T>& bit)
 {
-    size_t index = ant.x * 8 + ant.y;
+    size_t index = ant.x * sizeof(T) + ant.y;
 
     if(bit[index] == 0)
     {
