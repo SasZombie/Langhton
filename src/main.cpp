@@ -66,8 +66,8 @@ int main()
     InitWindow(ScreenWidth, ScreenHeight, "Langhton's Ant");
     SetTargetFPS(5);
 
-    uint64_t value32 = 0;
-    BitReader reader(value32);
+    uint64_t value64 = 0;
+    BitReader reader(value64);
     Ant ant{4, 4, Facing::DOWN};
 
     while (!WindowShouldClose())
