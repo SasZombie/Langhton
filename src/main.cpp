@@ -7,35 +7,40 @@
 void DrawBoardPart();
 void DrawBoardUnaccessiblePart();
 void DrawCell(float x, float y, Color color, Color borderColor);
-void DrawAnt(Ant& ant);
+void DrawAnt(Ant &ant);
 
 constexpr size_t ScreenWidth = 800;
 constexpr size_t ScreenHeight = 800;
 
 constexpr float cellSize = 20, boardPartSize = 8;
-void DrawBoardUnaccessiblePart(float offsetX, float offsetY) {
-    for(int i = 0; i < boardPartSize; ++i)
-        for(int j = 0; j < boardPartSize; ++j)
+void DrawBoardUnaccessiblePart(float offsetX, float offsetY)
+{
+    for (int i = 0; i < boardPartSize; ++i)
+        for (int j = 0; j < boardPartSize; ++j)
             DrawCell(i * cellSize + offsetX, j * cellSize + offsetY, BLACK, Color{18, 18, 18, 255});
 }
-void DrawBoardPart(BitReader<uint64_t> &reader, float offsetX, float offsetY) {
-    for(int i = 0; i < boardPartSize; ++i)
-        for(int j = 0; j < boardPartSize; ++j) {
+void DrawBoardPart(BitReader<uint64_t> &reader, float offsetX, float offsetY)
+{
+    for (int i = 0; i < boardPartSize; ++i)
+        for (int j = 0; j < boardPartSize; ++j)
+        {
             Color cellColor;
             cellColor = reader[i * boardPartSize + j] == 0 ? BLACK : WHITE;
 
             DrawCell(i * cellSize + offsetX, j * cellSize + offsetY, cellColor, Color{60, 0, 60, 255});
         }
 }
-void DrawCell(float x, float y, Color color, Color borderColor) {
+void DrawCell(float x, float y, Color color, Color borderColor)
+{
     DrawRectangle(x, y, cellSize, cellSize, color);
     DrawRectangleLinesEx({x, y, cellSize, cellSize}, 1.f, borderColor);
 }
-void DrawAnt(Ant& ant) {
+void DrawAnt(Ant &ant)
+{
     // Making the ant body
     Vector2 v1 = {-4, -4};
-    Vector2 v2 = {-4,  4};
-    Vector2 v3 = { 8,  0};
+    Vector2 v2 = {-4, 4};
+    Vector2 v3 = {8, 0};
 
     // Rotating the ant body
     v1 = Vector2Rotate(v1, static_cast<size_t>(ant.facing) * 90 * DEG2RAD);
@@ -58,7 +63,6 @@ int main()
     constexpr size_t boardPartsHorizontally = ScreenWidth / boardSideLength;
     constexpr size_t boardPartsVertically = ScreenHeight / boardSideLength;
 
-
     InitWindow(ScreenWidth, ScreenHeight, "Langhton's Ant");
     SetTargetFPS(5);
 
@@ -66,15 +70,15 @@ int main()
     BitReader reader(value32);
     Ant ant{4, 4, Facing::DOWN};
 
-    while(!WindowShouldClose()) {
+    while (!WindowShouldClose())
+    {
         BeginDrawing();
-        
+
         for (size_t i = 0; i < boardPartsHorizontally; ++i)
             DrawBoardUnaccessiblePart(i * boardSideLength, 0);
         for (size_t i = 1; i < boardPartsVertically; ++i)
             DrawBoardUnaccessiblePart(0, i * boardSideLength);
 
-        
         DrawLine(boardSideLength, boardSideLength, boardSideLength, ScreenHeight, RED);
         DrawLine(boardSideLength, boardSideLength - 1, ScreenWidth, boardSideLength - 1, RED);
 
