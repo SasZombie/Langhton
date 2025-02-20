@@ -7,9 +7,7 @@ void DrawBoardPart();
 void DrawCell(float x, float y, Color color);
 
 
-float 
-    cellSize = 20,
-    boardSize = 8;
+constexpr float cellSize = 20, boardSize = 8;
 void DrawBoardPart(BitReader<uint64_t> &reader, float offsetX, float offsetY) {
     for(int i = 0; i < boardSize; ++i)
         for(int j = 0; j < boardSize; ++j) {
