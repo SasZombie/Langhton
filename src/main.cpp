@@ -137,12 +137,12 @@ int main()
         DrawLine(boardSideLength, boardSideLength - 1, ScreenWidth, boardSideLength - 1, RED);
 
         ClearBackground(Color{18, 18, 18, 255});
-        //moveAnt(ant, reader);
+        moveAnt(ant, reader);
 
-        for(size_t i = 0; i < boardParts.size(); ++i) {
-            DrawBoardPart(reader, boardParts[i].getX(), boardParts[i].getY());
-            std::cout << i % 4 + 1 << ' ' << i / 4 + 1 << '\n';
-        }
+        // for(size_t i = 0; i < boardParts.size(); ++i) {
+        //     DrawBoardPart(reader, boardParts[i].getX(), boardParts[i].getY());
+        //     std::cout << i % 4 + 1 << ' ' << i / 4 + 1 << '\n';
+        // }
         DrawAnt(ant);
         EndDrawing();
     }
