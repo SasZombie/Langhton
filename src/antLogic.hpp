@@ -3,8 +3,8 @@
 
 enum struct Facing{
     UP, 
-    DOWN,
     RIGHT,
+    DOWN,
     LEFT,
 };
 
