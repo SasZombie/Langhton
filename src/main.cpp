@@ -9,8 +9,8 @@ void DrawBoardUnaccessiblePart();
 void DrawCell(float x, float y, Color color, Color borderColor);
 void DrawAnt(Ant& ant);
 
-const size_t ScreenWidth = 800;
-const size_t ScreenHeight = 800;
+constexpr size_t ScreenWidth = 800;
+constexpr size_t ScreenHeight = 800;
 
 constexpr float cellSize = 20, boardPartSize = 8;
 void DrawBoardUnaccessiblePart(float offsetX, float offsetY) {
@@ -54,10 +54,9 @@ void DrawAnt(Ant& ant) {
 
 int main()
 {
-    const size_t 
-        boardSideLength = boardPartSize * cellSize,
-        boardPartsHorizontally = ScreenWidth / boardSideLength,
-        boardPartsVertically = ScreenHeight / boardSideLength;
+    constexpr size_t boardSideLength = boardPartSize * cellSize;
+    constexpr size_t boardPartsHorizontally = ScreenWidth / boardSideLength;
+    constexpr size_t boardPartsVertically = ScreenHeight / boardSideLength;
 
 
     InitWindow(ScreenWidth, ScreenHeight, "Langhton's Ant");
