@@ -8,13 +8,16 @@ enum struct Facing{
     LEFT,
 };
 
+template <Numeric T>
 struct Ant
 {
     size_t x, y;
     Facing facing;
+    BitReader<T> reader[9];
 };
 
-std::pair<size_t, size_t> move(const Ant& a)
+template <Numeric T>
+std::pair<size_t, size_t> move(const Ant<T>& a)
 {
     switch (a.facing)
     {
@@ -38,7 +41,7 @@ std::pair<size_t, size_t> move(const Ant& a)
 }
 
 template<Numeric T>
-void moveAnt(Ant& ant, BitReader<T>& bit)
+void moveAnt(Ant<T>& ant, BitReader<T>& bit)
 {
     size_t index = ant.x * sizeof(T) + ant.y;
 

@@ -4,10 +4,10 @@
 #include "antLogic.hpp"
 #include "raymath.h"
 
-void DrawBoardPart();
-void DrawBoardUnaccessiblePart();
+void DrawBoardPart(float offsetX, float offsetY);
+void DrawBoardUnaccessiblePart(BitReader<uint64_t> &reader, float offsetX, float offsetY);
 void DrawCell(float x, float y, Color color, Color borderColor);
-void DrawAnt(Ant &ant);
+void DrawAnt(Ant<uint64_t> &ant);
 
 constexpr size_t ScreenWidth = 800;
 constexpr size_t ScreenHeight = 800;
@@ -35,7 +35,7 @@ void DrawCell(float x, float y, Color color, Color borderColor)
     DrawRectangle(x, y, cellSize, cellSize, color);
     DrawRectangleLinesEx({x, y, cellSize, cellSize}, 1.f, borderColor);
 }
-void DrawAnt(Ant &ant)
+void DrawAnt(Ant<uint64_t> &ant)
 {
     // Making the ant body
     Vector2 v1 = {-4, -4};
@@ -66,9 +66,19 @@ int main()
     InitWindow(ScreenWidth, ScreenHeight, "Langhton's Ant");
     SetTargetFPS(5);
 
+
+    // struct Ant
+    // {
+    //     size_t x, y;
+    //     Facing facing;
+    //     BitReader<T> reader[9];
+    // };
+
     uint64_t value64 = 0;
-    BitReader reader(value64);
-    Ant ant{4, 4, Facing::DOWN};
+    BitReader<uint64_t> reader(value64);
+    BitReader<uint64_t> readers[9];
+    readers[0] = reader;
+    Ant<uint64_t> ant{4, 4, Facing::DOWN, readers};
 
     while (!WindowShouldClose())
     {
