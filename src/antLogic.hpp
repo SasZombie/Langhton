@@ -13,8 +13,15 @@ struct Ant
 {
     size_t x, y;
     Facing facing;
-    std::array<BitReader<T>, 9> readers;
+    long currentlyOn = 0;
+    size_t partsDiscovered = 1;
+    long boardPartId;
 };
+
+template <Numeric T>
+void increaseDiscovered(const Ant<T>& a) {
+    ++a.partsDiscovered;
+}
 
 template <Numeric T>
 std::pair<size_t, size_t> move(const Ant<T>& a)
@@ -43,7 +50,7 @@ std::pair<size_t, size_t> move(const Ant<T>& a)
 template<Numeric T>
 void moveAnt(Ant<T>& ant, BitReader<T>& bit)
 {
-    size_t index = ant.x * sizeof(T) + ant.y;
+    size_t index = ant.x % sizeof(T) * sizeof(T) + ant.y % sizeof(T);
 
     if(bit[index] == 0)
     {

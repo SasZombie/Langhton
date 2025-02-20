@@ -3,11 +3,15 @@
 #include "BitReader.hpp"
 #include "antLogic.hpp"
 #include "raymath.h"
+#include "BoardPart.hpp"
+#include <vector>
 
-void DrawBoardPart(float offsetX, float offsetY);
-void DrawBoardUnaccessiblePart(BitReader<uint64_t> &reader, float offsetX, float offsetY);
+void DrawBoardUnaccessiblePart(float offsetX, float offsetY);
+void DrawBoardPart(BitReader<uint64_t> &reader, float offsetX, float offsetY);
 void DrawCell(float x, float y, Color color, Color borderColor);
 void DrawAnt(Ant<uint64_t> &ant);
+void antChangeReader(Ant<uint64_t> &a, std::vector<BoardPart<uint64_t>> boardParts);
+void createBoardParts(long id, std::vector<BoardPart<uint64_t>>& boardParts);
 
 constexpr size_t ScreenWidth = 800;
 constexpr size_t ScreenHeight = 800;
@@ -57,6 +61,42 @@ void DrawAnt(Ant<uint64_t> &ant)
     DrawCircle(v3.x, v3.y, 2.0, RED);
 }
 
+void antChangeReader(Ant<uint64_t> &a, std::vector<BoardPart<uint64_t>> boardParts) {
+    
+}
+
+void createBoardParts(long id, std::vector<BoardPart<uint64_t>>& boardParts) {
+    auto it = std::find_if(boardParts.begin(), boardParts.end(), [&](BoardPart<uint64_t> bp) { return bp.getId() == id; });
+
+    if (it != boardParts.end()) {
+        for (size_t i = 0; i < 4; ++i)
+            if(boardParts[id].getNeighbourId(i) == -1) {
+                boardParts[id].setNeighbour(i, boardParts.size());
+
+                size_t x = boardParts[id].getX(), y = boardParts[id].getY();
+                switch(i) {
+                    case 0: if(y == boardPartSize * cellSize) continue;
+                            y -= boardPartSize * cellSize;
+                            break;
+                    case 1: if(x == boardPartSize * cellSize) continue;
+                            x -= boardPartSize * cellSize;
+                            break;
+                    case 2: if(y >= 3 * boardPartSize * cellSize) continue;
+                            y += boardPartSize * cellSize;
+                            break;
+                    case 3: if(x >= 3 * boardPartSize * cellSize) continue;
+                            x += boardPartSize * cellSize;
+                            break;
+                    default: std::cerr << "WTF"; std::abort();
+                }
+                std::cout << "CREATED BOARD " << boardParts.size();
+                boardParts.push_back({BitReader<uint64_t>(0), boardParts.size(), x, y}); 
+            }
+    } else {
+        std::cout << "The board part doesn't yet exist!";
+    }
+}
+
 int main()
 {
     constexpr size_t boardSideLength = boardPartSize * cellSize;
@@ -76,9 +116,13 @@ int main()
 
     uint64_t value64 = 0;
     BitReader<uint64_t> reader(value64);
-    BitReader<uint64_t> readers[9];
-    readers[0] = reader;
-    Ant<uint64_t> ant{4, 4, Facing::DOWN, readers};
+    std::vector<BoardPart<uint64_t>> boardParts;
+    boardParts.reserve(16);
+    boardParts.push_back({reader, 0, boardSideLength, boardSideLength});
+    Ant<uint64_t> ant{4, 4, Facing::DOWN, 0};
+
+    createBoardParts(0, boardParts);
+    createBoardParts(1, boardParts);
 
     while (!WindowShouldClose())
     {
@@ -93,8 +137,12 @@ int main()
         DrawLine(boardSideLength, boardSideLength - 1, ScreenWidth, boardSideLength - 1, RED);
 
         ClearBackground(Color{18, 18, 18, 255});
-        moveAnt(ant, reader);
-        DrawBoardPart(reader, boardSideLength, boardSideLength);
+        //moveAnt(ant, reader);
+
+        for(size_t i = 0; i < boardParts.size(); ++i) {
+            DrawBoardPart(reader, boardParts[i].getX(), boardParts[i].getY());
+            std::cout << i % 4 + 1 << ' ' << i / 4 + 1 << '\n';
+        }
         DrawAnt(ant);
         EndDrawing();
     }
